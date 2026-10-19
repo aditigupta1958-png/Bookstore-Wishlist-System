@@ -1,0 +1,201 @@
+import mysql.connector
+
+# Connect to MySQL
+conn = mysql.connector.connect
+(
+    host="localhost",
+    user="root",          # your MySQL username
+    password="yourpassword",  # your MySQL password
+    database="bookstore_db"
+)
+cursor = conn.cursor()
+
+# Drop table if exists
+cursor.execute("DROP TABLE IF EXISTS books")
+# Create table
+cursor.execute
+("""
+    CREATE TABLE books
+ (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        author VARCHAR(255) NOT NULL,
+        price DECIMAL(10,2) NOT NULL
+    )
+""")
+
+# Predefined 100 books (alphabetically arranged, prices in INR)
+books =
+ [
+    ("A Clockwork Orange", "Anthony Burgess", 845),
+    ("A Passage to India", "E.M. Forster", 1020),
+    ("A Tale of Two Cities", "Charles Dickens", 1327.00),
+    ("Alice's Adventures in Wonderland", "Lewis Carroll", 780.00),
+    ("Animal Farm", "George Orwell", 829.00),
+    ("Anna Karenina", "Leo Tolstoy", 1450.00),
+    ("Anne of Green Gables", "L.M. Montgomery", 890.00),
+    ("Brave New World", "Aldous Huxley", 1120.00),
+    ("Catch-22", "Joseph Heller", 1162.00),
+    ("Cat's Cradle", "Kurt Vonnegut", 933.00),
+    ("Charlotte's Web", "E.B. White", 780),
+    ("Charlie and the Chocolate Factory", "Roald Dahl", 850.00),
+    ("Crime and Punishment", "Fyodor Dostoevsky", 1389.00),
+    ("Dandelion Wine", "Jenkin Reid", 1880.00),
+    ("David Copperfield", "Charles Dickens", 1130),
+    ("Don Quixote", "Miguel de Cervantes", 1429.00),
+    ("Dracula", "Bram Stoker", 1079.00),
+    ("Dune", "Frank Herbert", 1535.00),
+    ("Emma", "Jane Austen", 975.00),
+    ("Fahrenheit 451", "Ray Bradbury", 913.00),
+    ("Frankenstein", "Mary Shelley", 851.00),
+    ("Gone with the Wind", "Margaret Mitchell", 1659.00),
+    ("Great Expectations", "Charles Dickens", 1099.00),
+    ("Hamlet", "William Shakespeare", 789.00),
+    ("Heart of Darkness", "Joseph Conrad", 908.00),
+    ("Jane Eyre", "Charlotte Brontë", 1017.00),
+    ("Les Misérables", "Victor Hugo", 1660.00),
+    ("Life of Pi", "Yann Martel", 1204.00),
+    ("Little Women", "Louisa May Alcott", 1121.00),
+    ("Lolita", "Vladimir Nabokov", 1265.00),
+    ("Lord of the Flies", "William Golding", 1079.00),
+    ("Madame Bovary", "Gustave Flaubert", 1224.00),
+    ("Moby-Dick", "Herman Melville", 1411.00),
+    ("Nineteen Eighty-Four", "George Orwell", 1162.00),
+    ("Oliver Twist", "Charles Dickens", 954.00),
+    ("Pride and Prejudice", "Jane Austen", 891.00),
+    ("Rebecca", "Daphne du Maurier", 996.00),
+    ("Robinson Crusoe", "Daniel Defoe", 1079.00),
+    ("Romeo and Juliet", "William Shakespeare", 767.00),
+    ("Sense and Sensibility", "Jane Austen", 995.00),
+    ("Slaughterhouse-Five", "Kurt Vonnegut", 1058.00),
+    ("The Adventures of Huckleberry Finn", "Mark Twain", 1204.00),
+    ("The Alchemist", "Paulo Coelho", 1245.00),
+    ("The Brothers Karamazov", "Fyodor Dostoevsky", 1619.00),
+    ("The Catcher in the Rye", "J.D. Salinger", 1099.00),
+    ("The Count of Monte Cristo", "Alexandre Dumas", 1556.00),
+    ("The Da Vinci Code", "Dan Brown", 1328.00),
+    ("The Divine Comedy", "Dante Alighieri", 1680.00),
+    ("The Fountainhead", "Ayn Rand", 1493.00),
+    ("The Great Gatsby", "F. Scott Fitzgerald", 1038.00),
+    ("The Grapes of Wrath", "John Steinbeck", 1245.00),
+    ("The Handmaid's Tale", "Margaret Atwood", 1158.00),
+    ("The Hobbit", "J.R.R. Tolkien", 1183.00),
+    ("The Hunchback of Notre-Dame", "Victor Hugo", 1308.00),
+    ("The Iliad", "Homer", 1494.00),
+    ("The Jungle", "Upton Sinclair", 975.00),
+    ("The Kite Runner", "Khaled Hosseini", 1369.00),
+    ("The Little Prince", "Antoine de Saint-Exupéry", 830.00),
+    ("The Metamorphosis", "Franz Kafka", 827.00),
+    ("The Odyssey", "Homer", 1452.00),
+    ("The Old Man and the Sea", "Ernest Hemingway", 1017.00),
+    ("The Picture of Dorian Gray", "Oscar Wilde", 954.00),
+    ("The Pilgrim's Progress", "John Bunyan", 908.00),
+    ("The Prince", "Niccolò Machiavelli", 809.00),
+    ("The Road", "Cormac McCarthy", 1161.00),
+    ("The Scarlet Letter", "Nathaniel Hawthorne", 996.00),
+    ("The Secret Garden", "Frances Hodgson Burnett", 954.00),
+    ("The Shining", "Stephen King", 1245.00),
+    ("The Stranger", "Albert Camus", 1079.00),
+    ("The Sun Also Rises", "Ernest Hemingway", 1079.00),
+    ("The Tempest", "William Shakespeare", 891.00),
+    ("The Time Machine", "H.G. Wells", 851.00),
+    ("The Trial", "Franz Kafka", 930.00),
+    ("The War of the Worlds", "H.G. Wells", 1038.00),
+    ("The Wind in the Willows", "Kenneth Grahame", 995.00),
+    ("The Woman in White", "Wilkie Collins", 1099.00),
+    ("The Yellow Wallpaper", "Charlotte Perkins Gilman", 789.00),
+    ("To Kill a Mockingbird", "Harper Lee", 1204.00),
+    ("Treasure Island", "Robert Louis Stevenson", 996.00),
+    ("Twilight", "Stephenie Meyer", 975.00),
+    ("Ulysses", "James Joyce", 1596.00),
+    ("Uncle Tom's Cabin", "Harriet Beecher Stowe", 1141.00),
+    ("War and Peace", "Leo Tolstoy", 1743.00),
+    ("Watership Down", "Richard Adams", 1224.00),
+    ("We", "Yevgeny Zamyatin", 1079.00),
+    ("White Fang", "Jack London", 871.00),
+    ("Wuthering Heights", "Emily Brontë", 1121.00),
+    ("Zen and the Art of Motorcycle Maintenance", "Robert M. Pirsig", 1286.00),
+    ("1984", "George Orwell", 1162.00),
+    ("Animal Chronicles", "Various Authors", 700.00),
+    ("Around the World in 80 Days", "Jules Verne", 880.00),
+    ("Beloved", "Toni Morrison", 1120.00),
+    ("Catch a Star", "Various Authors", 690.00),
+    ("Cloud Atlas", "David Mitchell", 1200.00),
+    ("The Color Purple", "Alice Walker", 1100.00),
+    ("East of Eden", "John Steinbeck", 1290.00),
+    ("Infinite Jest", "David Foster Wallace", 1580.00),
+    ("Lord Jim", "Joseph Conrad", 1070.00),
+    ("The Secret", "Rhonda Byrne", 950.00),
+    ("Wings of Fire", "A.P.J. Abdul Kalam", 980.00)
+]
+
+# Insert data
+cursor.executemany("INSERT INTO books (title, author, price) VALUES (%s, %s, %s)", books)
+
+conn.commit()
+cursor.close()
+conn.close()
+
+print("✅ Database created and 100 books inserted into MySQL (prices in INR).")
+
+import mysql.connector
+
+# Connect to MySQL
+conn = mysql.connector.connect
+(
+    host="localhost",
+    user="root",          # your MySQL username
+    password="yourpassword",  # your MySQL password
+    database="bookstore_db"
+)
+cursor = conn.cursor()
+
+wishlist = []
+
+def search_book(title):
+    cursor.execute("SELECT * FROM books WHERE title = %s", (title,))
+    return cursor.fetchone()
+
+def add_to_wishlist(book):
+    wishlist.append(book)
+
+def display_wishlist():
+    if not wishlist:
+        print("Your wishlist is empty.")
+        return
+    print("\nYour Wishlist:")
+    total_cost = 0
+    for book in wishlist:
+        print(f"• {book[1]} by {book[2]} - ₹{book[3]:.2f}")
+        total_cost += float(book[3])
+    print(f"Total Cost: ₹{total_cost:.2f}\n")
+
+# Main Loop
+while True:
+    print("\n--- Bookstore Wishlist System ---")
+    print("1. Search and add book to wishlist")
+    print("2. View wishlist")
+    print("3. Exit")
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        title = input("Enter book title to search: ")
+        book = search_book(title)
+        if book:
+            print(f"Book found: {book[1]} by {book[2]} - ₹{book[3]:.2f}")
+            add = input("Add to wishlist? (y/n): ").lower()
+            if add == "y":
+                add_to_wishlist(book)
+                print("Book added to wishlist.")
+        else:
+            print("Book not found.")
+    elif choice == "2":
+        display_wishlist()
+    elif choice == "3":
+        print("Exiting... Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please try again.")
+
+cursor.close()
+conn.close()
